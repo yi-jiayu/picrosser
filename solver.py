@@ -1,6 +1,10 @@
 from z3 import And, If, Not, Or, Sum
 
 
+def column(puzzle, n):
+    return [row[n] for row in puzzle]
+
+
 def consecutive(cells, hint):
     return Or([And([cell if i <= j < i + hint else Not(cell) for j, cell in enumerate(cells)])
                for i in range(len(cells) - hint + 1)])
