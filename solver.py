@@ -18,3 +18,7 @@ def nonconsecutive(cells, hint):
 def one(cells):
     return Or([And([cell if i == j else Not(cell) for j, cell in enumerate(cells)])
                for i in range(len(cells))])
+
+
+def none(cells):
+    return And([Not(cell) for cell in cells])
