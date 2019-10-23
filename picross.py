@@ -1,5 +1,5 @@
 from z3 import *
-from solver import column, consecutive, nonconsecutive, none, one
+from solver import column, consecutive, exclusive, nonconsecutive, none, one
 
 ##################
 # 3x3 1-colour 1 #
@@ -102,6 +102,76 @@ s = Solver()
 s.add(red_rows + red_columns
       + blue_rows + blue_columns
       )
+
+if s.check() == sat:
+    m = s.model()
+    r = [[m.evaluate(red[i][j]) for j in range(ncols)] for i in range(nrows)]
+    print_matrix(r)
+    r = [[m.evaluate(blue[i][j]) for j in range(ncols)] for i in range(nrows)]
+    print_matrix(r)
+else:
+    print(unsat)
+
+##########################
+# 2x2 1-colour ambiguous #
+##########################
+
+nrows = 2
+ncols = 2
+puzzle = [[Bool(f'({row}, {col})') for col in range(ncols)] for row in range(nrows)]
+
+rows = [
+    one(puzzle[0]),
+    one(puzzle[1])
+]
+
+columns = [
+    one(column(puzzle, 0)),
+    one(column(puzzle, 1))
+]
+
+s = Solver()
+s.add(rows + columns)
+
+if s.check() == sat:
+    m = s.model()
+    r = [[m.evaluate(puzzle[i][j]) for j in range(ncols)] for i in range(nrows)]
+    print_matrix(r)
+else:
+    print(unsat)
+
+#################
+# 2x2 2-colour  #
+#################
+
+nrows = 2
+ncols = 2
+red = [[Bool(f"({row}, {col}, 'red')") for col in range(ncols)] for row in range(nrows)]
+blue = [[Bool(f"({row}, {col}, 'blue')") for col in range(ncols)] for row in range(nrows)]
+
+red_rows = [
+    one(red[0]),
+    one(red[1])
+]
+
+red_columns = [
+    one(column(red, 0)),
+    one(column(red, 1))
+]
+
+blue_rows = [
+    one(blue[0]),
+    none(blue[1])
+]
+
+blue_columns = [
+    one(column(blue, 0)),
+    none(column(blue, 1))
+]
+
+s = Solver()
+s.add(red_rows + red_columns + blue_rows + blue_columns)
+s.add(exclusive(red, blue))
 
 if s.check() == sat:
     m = s.model()

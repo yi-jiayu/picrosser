@@ -1,3 +1,4 @@
+import itertools
 from z3 import And, If, Not, Or, Sum
 
 
@@ -22,3 +23,8 @@ def one(cells):
 
 def none(cells):
     return And([Not(cell) for cell in cells])
+
+
+def exclusive(*cells):
+    cells = (itertools.chain.from_iterable(cells) for cells in cells)
+    return And([Sum([If(cell, 1, 0) for cell in corresponding_cells]) <= 1 for corresponding_cells in zip(*cells)])
