@@ -8,7 +8,7 @@ Solves a simple 2x2 picross puzzle with the following clues:
 """
 
 from z3 import *
-from solver import consecutive, nonconsecutive
+from solver import consecutive, nonconsecutive, one
 
 nrows = 3
 ncols = 3
@@ -16,14 +16,10 @@ puzzle = [[Bool(f'({row}, {col})') for col in range(ncols)] for row in range(nro
 
 row_0 = nonconsecutive(puzzle[0], 2)
 row_1 = consecutive(puzzle[1], 2)
-row_2 = Or(And(puzzle[2][0], Not(puzzle[2][1]), Not(puzzle[2][2])),
-           And(Not(puzzle[2][0]), puzzle[2][1], Not(puzzle[2][2])),
-           And(Not(puzzle[2][0]), Not(puzzle[2][1]), puzzle[2][2]))
+row_2 = one(puzzle[2])
 
 col_0 = consecutive([puzzle[i][0] for i in range(nrows)], 2)
-col_1 = Or(And(puzzle[0][1], Not(puzzle[1][1]), Not(puzzle[2][1])),
-           And(Not(puzzle[0][1]), puzzle[1][1], Not(puzzle[2][1])),
-           And(Not(puzzle[0][1]), Not(puzzle[1][1]), puzzle[2][1]))
+col_1 = one([puzzle[i][1] for i in range(nrows)])
 col_2 = nonconsecutive([puzzle[i][2] for i in range(nrows)], 2)
 
 s = Solver()
