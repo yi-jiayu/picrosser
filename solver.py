@@ -2,11 +2,8 @@ from z3 import And, If, Not, Or, Sum
 
 
 def consecutive(cells, hint):
-    possibilities = []
-    for i in range(len(cells) - hint + 1):
-        possibility = (cell if i <= j < i + hint else Not(cell) for j, cell in enumerate(cells))
-        possibilities.append(And(*possibility))
-    return Or(*possibilities)
+    return Or([And([cell if i <= j < i + hint else Not(cell) for j, cell in enumerate(cells)])
+               for i in range(len(cells) - hint + 1)])
 
 
 def nonconsecutive(cells, hint):
