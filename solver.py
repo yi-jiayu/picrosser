@@ -21,6 +21,17 @@ def one(cells):
                for i in range(len(cells))])
 
 
+def constraint(cells, hint):
+    if hint == 0:
+        return none(cells)
+    elif hint == 1:
+        return one(cells)
+    elif hint < 0:
+        return consecutive(cells, -hint)
+    else:
+        return nonconsecutive(cells, hint)
+
+
 def none(cells):
     return And([Not(cell) for cell in cells])
 
