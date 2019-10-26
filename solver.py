@@ -1,5 +1,5 @@
 import itertools
-from z3 import And, If, Not, Or, Sum
+from z3 import And, Bool, If, Not, Or, Solver, Sum, sat
 
 
 def column(puzzle, n):
@@ -39,3 +39,44 @@ def none(cells):
 def exclusive(*cells):
     cells = (itertools.chain.from_iterable(cells) for cells in cells)
     return And([Sum([If(cell, 1, 0) for cell in corresponding_cells]) <= 1 for corresponding_cells in zip(*cells)])
+
+
+def solve(puzzle):
+    nrows = puzzle['nrows']
+    ncols = puzzle['ncols']
+    ncolours = puzzle['ncolours']
+
+    colours = [[[Bool(f'({row}, {col}, {colour})')
+                 for col in range(ncols)]
+                for row in range(nrows)]
+               for colour in range(ncolours)]
+
+    row_hints = puzzle['rows']
+    column_hints = puzzle['columns']
+
+    constraints = []
+
+    for i, hints in enumerate(row_hints):
+        for colour, hint in enumerate(hints):
+            cells = colours[colour][i]
+            constraints.append(constraint(cells, hint))
+
+    for i, hints in enumerate(column_hints):
+        for colour, hint in enumerate(hints):
+            cells = column(colours[colour], i)
+            constraints.append(constraint(cells, hint))
+
+    s = Solver()
+    s.add(constraints)
+    s.add(exclusive(*colours))
+
+    if s.check() == sat:
+        m = s.model()
+        solution = [[0 for j in range(ncols)] for i in range(nrows)]
+        for colour, matrix in enumerate(colours):
+            r = [[m.evaluate(matrix[i][j]) for j in range(ncols)] for i in range(nrows)]
+            for i in range(nrows):
+                for j in range(ncols):
+                    if r[i][j]:
+                        solution[i][j] = colour + 1
+        return solution
