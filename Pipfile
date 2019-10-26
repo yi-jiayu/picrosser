@@ -9,6 +9,7 @@ verify_ssl = true
 z3-solver = "*"
 numpy = "*"
 toml = "*"
+scikit-image = "*"
 
 [requires]
 python_version = "3.7"
