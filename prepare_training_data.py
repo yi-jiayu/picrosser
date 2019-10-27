@@ -16,14 +16,14 @@ def mkdir(path):
         pass
 
 
-def save(hint):
+def save(hint, puzzle, orientation, i, j):
     global index
 
     io.imsave(os.path.join(HINTS_DIR, f'{index:04}.png'), img_as_uint(hint), check_contrast=False)
     hint = feature.canny(hint)
     # use PIL to save as bitmap PBM images
     # because skimage doesn't seem to support 1-bit resolution
-    Image.fromarray(hint).save(os.path.join(EDGES_DIR, f'{index:04}.pbm'))
+    Image.fromarray(hint).save(os.path.join(EDGES_DIR, f'{puzzle.split(".")[0]}_{orientation}{i}_{j}.pbm'))
     index += 1
 
 
@@ -42,11 +42,11 @@ if __name__ == '__main__':
         for i, column in enumerate(columns):
             hints = np.vsplit(column, 4)
             for j, hint in enumerate(hints):
-                save(hint)
+                save(hint, puzzle, 'col', i, j)
 
         rows = im[632:1757, 38:294]
         rows = np.vsplit(rows, 15)
         for i, row in enumerate(rows):
             hints = np.hsplit(row, 4)
             for j, hint in enumerate(hints):
-                save(hint)
+                save(hint, puzzle, 'row', i, j)
