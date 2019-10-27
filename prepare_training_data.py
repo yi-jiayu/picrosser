@@ -1,6 +1,7 @@
 import os.path
 
 import numpy as np
+from PIL import Image
 from skimage import io, feature, img_as_uint
 
 PUZZLES_DIR = 'data/puzzles'
@@ -18,9 +19,11 @@ def mkdir(path):
 def save(hint):
     global index
 
-    io.imsave(os.path.join(HINTS_DIR, f'{index:04}.png'), img_as_uint(hint))
+    io.imsave(os.path.join(HINTS_DIR, f'{index:04}.png'), img_as_uint(hint), check_contrast=False)
     hint = feature.canny(hint)
-    io.imsave(os.path.join(EDGES_DIR, f'{index:04}.png'), img_as_uint(hint))
+    # use PIL to save as bitmap PBM images
+    # because skimage doesn't seem to support 1-bit resolution
+    Image.fromarray(hint).save(os.path.join(EDGES_DIR, f'{index:04}.pbm'))
     index += 1
 
 
