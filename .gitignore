@@ -1,6 +1,7 @@
 # generated data
 data/edges
 data/hints
+data/sorted
 
 # Jetbrains
 .idea
