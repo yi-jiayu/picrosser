@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from skimage import io, img_as_bool
+from skimage import io
 from skimage.feature import match_template
+from skimage.filters import gaussian
 
 
 def find_number(tmpl, im, ax):
@@ -19,8 +20,8 @@ def find_number(tmpl, im, ax):
     return np.max(result), np.abs(offset)
 
 
-image = io.imread('data/edges/0040.pbm')
-image = img_as_bool(image)
+image = io.imread('data/edges/0000_row10_3.pbm')
+image = gaussian(image)
 
 fig, axes = plt.subplots(nrows=11, ncols=2, figsize=(4, 22))
 
@@ -28,7 +29,7 @@ for i in range(0, 22, 2):
     ax1 = axes[np.unravel_index(i, (11, 2))]
 
     template = io.imread(f'templates/{i // 2 + 1}.pbm')
-    template = img_as_bool(template)
+    template = gaussian(template)
     ax1.imshow(template, cmap=plt.cm.gray)
     ax1.set_axis_off()
 
