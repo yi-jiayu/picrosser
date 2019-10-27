@@ -20,20 +20,20 @@ def find_number(tmpl, im, ax):
     return np.max(result), np.abs(offset)
 
 
-image = io.imread('data/edges/0000_row10_3.pbm')
-image = gaussian(image)
+image = io.imread('data/edges/0001_col6_2.pbm')
+image = gaussian(image, sigma=2)
 
-fig, axes = plt.subplots(nrows=11, ncols=2, figsize=(4, 22))
+fig, axes = plt.subplots(nrows=15, ncols=2, figsize=(4, 30))
 
-for i in range(0, 22, 2):
-    ax1 = axes[np.unravel_index(i, (11, 2))]
+for i in range(0, 30, 2):
+    ax1 = axes[np.unravel_index(i, (15, 2))]
 
     template = io.imread(f'templates/{i // 2 + 1}.pbm')
-    template = gaussian(template)
+    template = gaussian(template, sigma=2)
     ax1.imshow(template, cmap=plt.cm.gray)
     ax1.set_axis_off()
 
-    ax2 = axes[np.unravel_index(i + 1, (11, 2))]
+    ax2 = axes[np.unravel_index(i + 1, (15, 2))]
     score, offset = find_number(template, image, ax2)
     ax2.set_title(f'{i}: {score:.3}, {offset}')
 

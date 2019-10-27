@@ -5,7 +5,7 @@ from skimage.io import imread
 from skimage.transform import hough_circle, hough_circle_peaks
 
 RADII = np.arange(31, 36)
-TEMPLATES = {i: gaussian(imread(f'templates/{i}.pbm')) for i in range(1, 12)}
+TEMPLATES = {i: gaussian(imread(f'templates/{i}.pbm'), sigma=2) for i in range(1, 16)}
 
 
 def is_zero(im):
@@ -27,7 +27,7 @@ def is_connected(im):
 
 
 def get_number(im):
-    im = gaussian(im)
+    im = gaussian(im, sigma=2)
     scores = {i: np.max(match_template(im, tmpl)) for i, tmpl in TEMPLATES.items()}
     scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     return scores[0][0]
