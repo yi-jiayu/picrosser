@@ -30,7 +30,12 @@ def get_number(im):
     im = gaussian(im, sigma=2)
     scores = {i: np.max(match_template(im, tmpl)) for i, tmpl in TEMPLATES.items()}
     scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-    return scores[0][0]
+    number, score = scores[0]
+    # special case to prevent 5 from being classified as 15
+    if number == 15:
+        if score <= 0.8:
+            return 5
+    return number
 
 
 def get_hint(im):
