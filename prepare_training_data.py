@@ -1,7 +1,7 @@
 import os.path
 
 import numpy as np
-from skimage import io, feature, img_as_uint, util
+from skimage import io, feature, img_as_uint
 
 PUZZLES_DIR = 'data/puzzles'
 HINTS_DIR = 'data/hints'
@@ -19,7 +19,7 @@ def save(hint):
     global index
 
     io.imsave(os.path.join(HINTS_DIR, f'{index:04}.png'), img_as_uint(hint))
-    hint = util.invert(feature.canny(hint))
+    hint = feature.canny(hint)
     io.imsave(os.path.join(EDGES_DIR, f'{index:04}.png'), img_as_uint(hint))
     index += 1
 
